@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import CreatableReactSelect from 'react-select/creatable';
 import { NoteData, Tag } from './App';
 import { v4 as uuidV4 } from 'uuid';
+import MarkdownEditor from '@uiw/react-markdown-editor';
 
 type NoteFormProps = {
 	onSubmit: (note: NoteData) => void;
@@ -23,15 +24,15 @@ const NoteForm = ({
 	const titleRef = useRef<HTMLInputElement>(null);
 	const markdownRef = useRef<HTMLTextAreaElement>(null);
 	const [selectedTags, setSelectedTags] = useState<Tag[]>(tags);
+	const [markdownValue, setMarkdownValue] = useState(markdown);
 
 	const handleSubmit = (e: FormEvent) => {
 		e.preventDefault();
 		const title = titleRef.current!.value;
-		const text = markdownRef.current!.value;
 
 		onSubmit({
 			title,
-			markdown: text,
+			markdown: markdownValue,
 			tags: selectedTags,
 		});
 
@@ -81,12 +82,9 @@ const NoteForm = ({
 
 				<Form.Group controlId='markdown'>
 					<Form.Label>Body</Form.Label>
-					<Form.Control
-						defaultValue={markdown}
-						ref={markdownRef}
-						required
-						as='textarea'
-						rows={15}
+					<MarkdownEditor
+						value={markdownValue}
+						onChange={(value, viewUpdate) => setMarkdownValue(value)}
 					/>
 				</Form.Group>
 				<Stack direction='horizontal' gap={2} className='justify-content-end'>
